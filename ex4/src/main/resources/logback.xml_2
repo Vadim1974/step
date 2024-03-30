@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<configuration>
+<!--    <property file="${appli.config.path}" />-->
+    <timestamp key="bySecond" datePattern="yyyyMMddHHmmss" />
+    <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <discriminator>
+            <Key>loggerFileName</Key>
+            <DefaultValue>unknown</DefaultValue>
+        </discriminator>
+        <sift>
+            <appender name="FILE-${loggerFileName}" class="ch.qos.logback.core.FileAppender">
+                <File>${log.dir}/${loggerFileName}_${bySecond}.log</File>
+                <Append>false</Append>
+                <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                    <layout class="com.mycompany.log.CustomLogLayout" />
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
+    <appender name="SIFT-TRACE" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <Key>loggerFileName</Key>
+            <DefaultValue>unknown</DefaultValue>
+        </discriminator>
+        <sift>
+            <appender name="TRACE-${loggerFileName}" class="ch.qos.logback.core.FileAppender">
+                <File>${log.dir}/TRACE_${loggerFileName}_${bySecond}.log</File>
+                <Append>false</Append>
+                <layout class="ch.qos.logback.classic.PatternLayout">
+                    <Pattern>%d %-5level %logger{5} - %msg%n</Pattern>
+                </layout>
+            </appender>
+        </sift>
+    </appender>
+    <logger name="org.springframework" level="ERROR" />
+    <root level="DEBUG">
+        <appender-ref ref="SIFT" />
+<!--        <appender-ref ref="SIFT-TRACE" />-->
+    </root>
+</configuration>
