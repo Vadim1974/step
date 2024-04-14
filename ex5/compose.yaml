@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: app
+    build:
+#      context: services/app
+      dockerfile: Dockerfile
+    environment:
+      - PORT=8443
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ProductAccountingDb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+    image: 'product-accounting'
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1000M
+        reservations:
+          cpus: "0.1"
+          memory: 100M
+    expose:
+      - '8443'
+    ports:
+      - "8443:8443"
+    depends_on:
+      - postgres
+    logging:
+      driver: json-file
+#      driver: journald
+#      options:
+#        labels: study.stepup
+
+  postgres:
+    image: postgres:alpine3.18
+    container_name: postgres
+#    Для контроля на стадии разработки, для эксплуатации порт остается скрытым
+    expose:
+      - '5432'
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=ProductAccountingDb
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - "db-data:/var/lib/postgresql/data"
+
+volumes:
+  db-data:
