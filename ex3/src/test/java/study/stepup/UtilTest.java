@@ -13,6 +13,7 @@ public class UtilTest {
         TestFraction fr = new TestFraction(2, 5);
         Fractionable fra = Utils.cache(fr);
         //getCountDoubleValueInvoked - счетчик вызовов метода doubleValue
+        assert fra != null;
         Assertions.assertEquals(0, fra.getCountDoubleValueInvoked());
 
         //Три вызова, но только первый не из кэша
